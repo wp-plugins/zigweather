@@ -1,0 +1,21 @@
+
+.zigweather-wrap { border:1px solid #ccc; padding:10px; margin-top:10px; }
+.zigweather-wrap .icon { float:right; }
+.zigweather-wrap .location { font-weight:bold; margin-bottom:10px; }
+.zigweather-wrap .actualtemp { font-size:150%; display:block; }
+.zigweather-wrap .acknowledgement { font-size:10px; margin-top:10px; line-height:12px; }
+
+.zigweather-admin .strong { font-weight:bold; }
+.zigweather-admin .right { text-align:right; }
+.zigweather-admin .mandatory { color:#e21; }
+.zigweather-admin .floatRight { float:right; display:inline; }
+.zigweather-admin .clearer { height:0px; clear:both; line-height:0px; overflow:hidden; font-size:0; }
+.zigweather-admin .wrap-left { float:left; display:inline; width:70%; }
+.zigweather-admin .wrap-right { float:left; display:inline; width:30%; }
+.zigweather-admin .donate form { float:right; display:inline; text-align:right; width:150px; }
+.zigweather-admin .col-pad { padding-right:15px; }
+.zigweather-admin table.widefat { margin-bottom:15px; }
+.zigweather-admin img.icon { vertical-align:middle; margin-bottom:1px; }
+.zigweather-admin img.floatRight { margin-bottom:0; }
+.zigweather-admin form input.checkbox { vertical-align:middle; margin-bottom:1px; }
+.zigweather-admin #icon-zigweather { background:url(../images/weather-few-clouds-32.png) center no-repeat !important; }
