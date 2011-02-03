@@ -2,16 +2,16 @@
 /*
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/wordpress/plugins/zigweather/
-Description: Adds a sidebar widget to show your current weather. Inspired by 'Weather Widget' by James Wilson, now completely rewritten using OOP techniques. Weather data is provided by the weather.com XOAP feed.
-Author: Andy Towler of ZigPress
-Version: 0.7
+Description: Adds a sidebar widget to show your current weather. Data is provided by the weather.com XOAP feed.
+Author: ZigPress
+Version: 0.8
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
 
 
 /*
-Copyright (c) 2010-2011 Andy Towler, All Rights Reserved
+Copyright (c) 2010-2011 ZigPress, All Rights Reserved
 
 This program is free software; you can redistribute it and/or modify 
 it under the terms of the GNU General Public License as published by 
@@ -108,9 +108,11 @@ if (!class_exists('ZigWeather'))
 			if (!isset($this->Options['location'])) { $this->Options['location'] = 'MTXX0001'; }
 			if (!isset($this->Options['locationname'])) { $this->Options['locationname'] = 'Valletta, Malta'; }
 			if (!isset($this->Options['unit'])) { $this->Options['unit'] = 'C'; }
+			if (!isset($this->Options['showwind'])) { $this->Options['showwind'] = 1; }
+			if (!isset($this->Options['showhumidity'])) { $this->Options['showhumidity'] = 1; }
 			$this->Options['cache'] = ''; # clear cache when activating plugin
 			$this->Options['lastcheck'] = 0;
-			update_option("zigweather_options", $this->Options);
+			update_option("zigweather_options", $this->Options); # re-save in case we added anything
 			}
 
 
@@ -248,6 +250,8 @@ if (!class_exists('ZigWeather'))
 					}
 				$this->Options['cache'] = ''; # clear cache when updating widget options
 				$this->Options['lastcheck'] = 0;
+				$this->Options['showwind'] = (htmlspecialchars($this->Params['showwind']) == '1') ? 1 : 0;
+				$this->Options['showhumidity'] = (htmlspecialchars($this->Params['showhumidity']) == '1') ? 1 : 0;
 				update_option("zigweather_options", $this->Options);
 				header('location: ' . $_SERVER['PHP_SELF'] . '?page=zigweather-settings&message=1');
 				exit();
@@ -274,6 +278,14 @@ if (!class_exists('ZigWeather'))
 			<tr valign="top">
 			<th scope="row"><label for="licensekey"><?php _e('Weather.com License Key', 'zigweather')?>:</label></th>
 			<td><input name="licensekey" type="text" id="licensekey" value="<?php echo esc_attr($this->Options['licensekey']) ?>" class="medium-text" /> <span class="description">Plugin supplied with: 561e1a02298548de</span></td>
+			</tr>
+			<tr valign="top">
+			<th scope="row"><label for="showwind"><?php _e('Show wind information', 'zigweather')?>:</label></th>
+			<td><input name="showwind" type="checkbox" id="showwind" value="1" <?php echo ($this->Options['showwind'] == 1) ? 'checked="checked"' : '' ?> /> <span class="description">&nbsp;</span></td>
+			</tr>
+			<tr valign="top">
+			<th scope="row"><label for="showhumidity"><?php _e('Show humidity', 'zigweather')?>:</label></th>
+			<td><input name="showhumidity" type="checkbox" id="showhumidity" value="1" <?php echo ($this->Options['showhumidity'] == 1) ? 'checked="checked"' : '' ?> /> <span class="description">&nbsp;</span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row"><label for="unit"><?php _e('Temperature units', 'zigweather')?>:</label></th>
@@ -389,6 +401,8 @@ if (!class_exists('ZigWeather'))
 						$strReceivedWindBearing = substr($strReceivedContent, $intPos);
 						$intPos = strpos($strReceivedWindBearing, "<t>") + 3;
 						$strReceivedWindBearing = substr($strReceivedWindBearing, $intPos, strpos($strReceivedWindBearing, "</t>") - $intPos);
+						$intPos = strpos($strReceivedContent, "<hmid>") + 6;
+						$strReceivedHumidity = substr($strReceivedContent, $intPos, strpos($strReceivedContent, "</hmid>") - $intPos);
 						}
 					}
 				$strContent = '';
@@ -397,7 +411,14 @@ if (!class_exists('ZigWeather'))
 				$strContent .= '<div class="conditions">' . $strReceivedConditions . '</div>';
 				$strContent .= '<span class="actualtemp">' . $strReceivedTemp . '&deg;' . $this->Options['unit'] . '</span>';
 				$strContent .= '<span class="feelslike">Feels like ' . $strReceivedFeelsLike . '&deg;' . $this->Options['unit'] . '</span>';
-				$strContent .= '<div class="wind">Wind: ' . $strReceivedWindSpeed . ' knots, ' . $strReceivedWindBearing . '</div>';
+				if ($this->Options['showwind'] == 1)
+					{
+					$strContent .= '<div class="wind">Wind: ' . $strReceivedWindSpeed . ' knots, ' . $strReceivedWindBearing . '</div>';
+					}
+				if ($this->Options['showhumidity'] == 1)
+					{
+					$strContent .= '<div class="humidity">Humidity: ' . $strReceivedHumidity . '%</div>';
+					}
 				$strContent .= '<div class="acknowledgement"><a href="http://www.weather.com/?prod=xoap&par=' . $this->Options['partnerid'] . '">Data provided by weather.com&reg;</a></div>';
 				echo $strContent . $this->NL;
 				$this->Options['cache'] = $strContent;
