@@ -4,7 +4,7 @@ Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/wordpress/plugins/zigweather/
 Description: Adds a sidebar widget to show your current weather. Data is provided by the weather.com XOAP feed.
 Author: ZigPress
-Version: 0.8
+Version: 0.8.1
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
@@ -253,7 +253,8 @@ if (!class_exists('ZigWeather'))
 				$this->Options['showwind'] = (htmlspecialchars($this->Params['showwind']) == '1') ? 1 : 0;
 				$this->Options['showhumidity'] = (htmlspecialchars($this->Params['showhumidity']) == '1') ? 1 : 0;
 				update_option("zigweather_options", $this->Options);
-				header('location: ' . $_SERVER['PHP_SELF'] . '?page=zigweather-settings&message=1');
+				ob_clean();
+				wp_redirect($_SERVER['PHP_SELF'] . '?page=zigweather-settings&message=1');
 				exit();
 				}
 			if ($this->Params['message'] == 1)
