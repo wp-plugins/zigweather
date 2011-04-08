@@ -4,7 +4,7 @@ Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/wordpress/plugins/zigweather/
 Description: Adds a sidebar widget to show your current weather. Data is provided by the weather.com XOAP feed.
 Author: ZigPress
-Version: 0.8.1
+Version: 0.8.2
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
@@ -54,7 +54,6 @@ if (!class_exists('ZigWeather'))
 	{
 	class ZigWeather
 		{
-		public $Version;
 		public $PluginFolder;
 		public $NL;
 		public $Params;
@@ -71,7 +70,6 @@ if (!class_exists('ZigWeather'))
 			$this->Name = 'ZigWeather';
 			$this->NL = "\n";
 			$this->Params = array();
-			$this->Version = '0.7';
 			$this->GetParams();
 			$this->PluginFolder = get_bloginfo('url') . '/' . PLUGINDIR.'/'.dirname(plugin_basename(__FILE__)) . '/'; # override due to other zig plugin
 			add_action('init', array($this, 'ActionInit'));
@@ -79,6 +77,7 @@ if (!class_exists('ZigWeather'))
 			add_action('admin_init', array($this, 'ActionAdminInit'));
 			add_action('admin_head', array($this, 'ActionAdminHead'));
 			add_action('admin_menu', array($this, 'ActionAdminMenu'));
+			add_filter('plugin_row_meta', array($this, 'FilterPluginRowMeta'), 10, 2 );
 			$this->Options = get_option('zigweather_options');
 			$this->IconFolder = $this->PluginFolder . 'images/';
 			$this->CacheDurations = array(
@@ -162,6 +161,14 @@ if (!class_exists('ZigWeather'))
 		public function ActionAdminMenu()
 			{
 			add_options_page('ZigWeather Options', 'ZigWeather', 'manage_options', 'zigweather-settings', array($this, 'DoAdminPage'));
+			}
+
+
+		public function FilterPluginRowMeta($links, $file) 
+			{
+			$plugin = plugin_basename(__FILE__);
+			if ($file == $plugin) return array_merge($links, array('<a target="_blank" href="http://www.zigpress.com/donations/">Donate</a>'));
+			return $links;
 			}
 
 
