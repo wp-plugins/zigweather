@@ -1,16 +1,18 @@
 === ZigWeather ===
 Contributors: ZigPress
 Donate link: http://www.zigpress.com/donations/
-Tags: widget, sidebar, weather, worldwide, temperatures, wind, rainfall, zig, zigpress
-Requires at least: 3.0.0
-Tested up to: 3.1.1
-Stable tag: 0.8.2
+Tags: widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
+Requires at least: 3.1
+Tested up to: 3.1.2
+Stable tag: 0.9
 
 ZigWeather adds a sidebar widget to show your current weather.
 
 == Description ==
 
-ZigWeather adds a sidebar widget to show your current weather. Inspired by 'Weather Widget' by James Wilson, now completely rewritten using OOP techniques, with a simpler control panel and many features under development that are not offered by 'Weather Widget'. Weather data is provided by the weather.com XOAP feed.
+ZigWeather adds a sidebar widget to show your current weather. Inspired by 'Weather Widget' by James Wilson but completely rewritten using OOP techniques, with a simpler control panel and extra features. Weather data is provided by the weather.com XOAP feed.
+
+Requires WordPress 3.1+ and PHP 5.2.4+.
 
 For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/wordpress/plugins/zigweather/).
 
@@ -22,18 +24,23 @@ For further information and support, please visit [the ZigWeather home page](htt
 
 == Installation ==
 
-1. Unzip the installer and upload the resulting 'zigweather' folder to the `/wp-content/plugins/` directory.  Alternatively, go to Admin > Plugins > Add New and enter ZigWeather in the search box.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
+1. Go to Admin > Plugins > Add New and enter ZigWeather in the search box.
+2. Follow the prompts to install and activate the plugin.
 3. Go to the settings page and change the settings as you need, then place the widget.
 
-To upgrade, simply deactivate, upload, reactivate, and check the plugin's admin page in case there are new options to play with. All your existing settings will be preserved.
+If upgrading manually, you MUST deactivate before updating and reactivate afterwards.
 
 == Frequently Asked Questions ==
 
-For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/wordpress/plugins/zigweather/).
+For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/wordpress/plugins/zigweather/).  Support will ONLY be provided in response to comments posted on that page.
 
 == Changelog ==
 
+= 0.9 =
+* Cache system completely overhauled
+* Added AJAX error handling to make problem resolution easier
+* Updated PHP version requirement in readiness for WordPress 3.2
+* Updated WordPress version requirement as new code only tested on most recent versions
 = 0.8.2 =
 * Verified compatibility with WordPress 3.1.1
 = 0.8.1 =

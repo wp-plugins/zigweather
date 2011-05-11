@@ -4,6 +4,7 @@
 .zigweather-wrap .location { font-weight:bold; margin-bottom:10px; }
 .zigweather-wrap .actualtemp { font-size:150%; display:block; }
 .zigweather-wrap .acknowledgement { font-size:10px; margin-top:10px; line-height:12px; }
+.zigweather-wrap .lastretrieved { font-size:10px; margin-top:5px; line-height:12px; }
 
 .zigweather-admin .strong { font-weight:bold; }
 .zigweather-admin .right { text-align:right; }
