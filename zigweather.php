@@ -4,7 +4,7 @@ Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/wordpress/plugins/zigweather/
 Description: Adds a sidebar widget to show your current weather. Data is provided by the weather.com XOAP feed.
 Author: ZigPress
-Version: 0.9
+Version: 0.9.1
 Requires at least: 3.1
 Tested up to: 3.1.2
 Author URI: http://www.zigpress.com/
@@ -146,6 +146,42 @@ class ZigWeather
 	public function ActionAdminInit()
 		{
 		load_plugin_textdomain('zigweather', null, dirname(plugin_basename(__FILE__)) . '/languages/');
+
+		# ajax city search
+		if ($this->Params['zwa'] == 'citysearch')
+			{
+			if (current_user_can('manage_options')) # this is how we protect this call
+				{
+				$xml = file_get_contents('http://xoap.weather.com/search/search?where=' . htmlentities($this->Params['where']));
+				ob_clean();
+				header('Content-Type: text/xml');
+				echo $xml;
+				exit();
+				}
+			}
+
+		# save settings
+		if (isset($this->Params['zigweather-settings-submit']))
+			{
+			check_admin_referer('zigpress_nonce');
+			$this->Options['partnerid'] = htmlspecialchars($this->Params['partnerid']);
+			$this->Options['licensekey'] = htmlspecialchars($this->Params['licensekey']);
+			$this->Options['unit'] = htmlspecialchars($this->Params['unit']);
+			$this->Options['cachetime'] = htmlspecialchars($this->Params['cachetime']);
+			if (strpos(htmlspecialchars($this->Params['location']), '|') !== false)
+				{
+				list($this->Options['location'], $this->Options['locationname']) = explode('|', htmlspecialchars($this->Params['location']));
+				}
+			$this->Options['newcache'] = array();
+			$this->Options['newcachechecked'] = 0;
+			$this->Options['showwind'] = (htmlspecialchars($this->Params['showwind']) == '1') ? 1 : 0;
+			$this->Options['showhumidity'] = (htmlspecialchars($this->Params['showhumidity']) == '1') ? 1 : 0;
+			update_option("zigweather_options", $this->Options);
+			ob_clean();
+			wp_redirect($_SERVER['PHP_SELF'] . '?page=zigweather-settings&message=1');
+			exit();
+			}
+
 		}
 
 
@@ -231,38 +267,6 @@ class ZigWeather
 
 	public function DoAdminPage()
 		{
-		if ($this->Params['zigaction'] == 'citysearch')
-			{
-			# ajax city search
-			if (current_user_can('manage_options')) # this is how we protect this call
-				{
-				$xml = file_get_contents('http://xoap.weather.com/search/search?where=' . htmlentities($this->Params['where']));
-				ob_clean();
-				header('Content-Type: text/xml');
-				echo $xml;
-				exit();
-				}
-			}
-		if (isset($this->Params['zigweather-settings-submit']))
-			{
-			check_admin_referer('zigpress_nonce');
-			$this->Options['partnerid'] = htmlspecialchars($this->Params['partnerid']);
-			$this->Options['licensekey'] = htmlspecialchars($this->Params['licensekey']);
-			$this->Options['unit'] = htmlspecialchars($this->Params['unit']);
-			$this->Options['cachetime'] = htmlspecialchars($this->Params['cachetime']);
-			if (strpos(htmlspecialchars($this->Params['location']), '|') !== false)
-				{
-				list($this->Options['location'], $this->Options['locationname']) = explode('|', htmlspecialchars($this->Params['location']));
-				}
-			$this->Options['newcache'] = array();
-			$this->Options['newcachechecked'] = 0;
-			$this->Options['showwind'] = (htmlspecialchars($this->Params['showwind']) == '1') ? 1 : 0;
-			$this->Options['showhumidity'] = (htmlspecialchars($this->Params['showhumidity']) == '1') ? 1 : 0;
-			update_option("zigweather_options", $this->Options);
-			ob_clean();
-			wp_redirect($_SERVER['PHP_SELF'] . '?page=zigweather-settings&message=1');
-			exit();
-			}
 		if ($this->Params['message'] == 1)
 			{
 			$this->ShowMessage(__('Settings saved - now go and place the widget!', 'zigweather'));
@@ -274,7 +278,6 @@ class ZigWeather
 		<div class="wrap-left">
 		<div class="col-pad">
 		<form id="frmZigWeather" action="<?php echo $_SERVER['REQUEST_URI']?>" method="post">
-		<input type="hidden" name="zigaction" value="update" />
 		<input type="hidden" id="zigweather-settings-submit" name="zigweather-settings-submit" value="1" />
 		<?php wp_nonce_field('zigpress_nonce'); ?>
 		<table class="form-table">
@@ -327,6 +330,7 @@ class ZigWeather
 				</select> 
 				<img id="imgLoader" style="margin-top:4px; display:none;" src="<?php echo $this->PluginFolder?>/images/ajax-loader.gif" alt="" />
 				<span id="spnAlert"></span>
+				<a class="button-secondary" id="btnZigWeatherReset" href="?page=zigweather-settings" style="display:none;">Start again</a>
 			</td>
 			</tr>
 		</table>
@@ -336,7 +340,7 @@ class ZigWeather
 		</form>
 		<p>The cache is cleared each time you save changes.</p>
 		<p>To get your own Weather.com Partner ID and License Key, <a href="https://registration.weather.com/ursa/xmloap/step1">sign up</a> then go to <a href="https://registration.weather.com/ursa/xmloap/step2">this URL</a>.</p>
-		<p>Deactivating the plugin will <strong>not</strong> delete your settings.</p>
+		<p>Deactivating the plugin will <strong>not</strong> delete your settings (though it will clear the cache).</p>
 		</div><!--col-pad-->
 		</div><!--wrap-left-->
 		<div class="wrap-right">
@@ -347,28 +351,55 @@ class ZigWeather
 		<div class="clearer">&nbsp;</div>
 		</div><!--wrap-->
 		<script type="text/javascript">
-		jQuery(document).ready(function(){
-			jQuery('#message').click(function(){jQuery(this).hide();});
-			jQuery('#btnZigWeatherSearch').click(function(){
-				jQuery('#search, #btnZigWeatherSearch').hide();
-				jQuery('#imgLoader').show();
-				where = jQuery('#search').val();
-				jQuery.ajaxSetup({
-					timeout : 5000
+
+		var zw = jQuery.noConflict();
+
+		zw(document).ready(function(){
+
+			zw('#message').click(function(){zw(this).hide();});
+
+			zw('#btnZigWeatherSearch').click(function(){
+
+				var callbackURL = '<?php echo $_SERVER['PHP_SELF']?>';
+				var callbackData = { 'page' : 'zigweather-settings', 'zwa' : 'citysearch', 'where' : zw('#search').val() };
+
+				zw('#spnAlert').html('');
+				zw('#search, #btnZigWeatherSearch').hide();
+				zw('#imgLoader').show();
+				zw(document).ajaxError(function(e, obj, settings, exception){
+					zw('#imgLoader').hide();
+					zw('#spnAlert').html('Error retrieving data via local callback (' + obj.status + ')<br />URI called was: <strong>' + settings.url + '</strong>');
 				});
-				jQuery(document).ajaxError(function(e, obj, settings, exception){
-					jQuery('#imgLoader').hide();
-					jQuery('#spnAlert').html('Error retrieving data via local callback (' + obj.status + ')<br />URI called was: <strong>' + settings.url + '</strong>');
+
+				zw.ajax({
+					cache: false,
+					type: 'GET',
+					url: callbackURL,
+					data: callbackData,
+					dataType: 'xml',
+					timeout: 10000,
+					success: handleSuccess,
+					error: handleError
 				});
-				jQuery('#spnAlert').html('');
-				jQuery.get('<?php echo $_SERVER['REQUEST_URI']?>', {'zigaction' : 'citysearch', 'where' : where}, function(objXML){
-					jQuery(objXML).find('loc').each(function(){
-						options = jQuery('#location').attr('options');
-						options[options.length] = new Option(jQuery(this).text() + ' [' + jQuery(this).attr('id') + ']&nbsp;', jQuery(this).attr('id') + '|' + jQuery(this).text());
+
+				function handleSuccess(data, status, request){
+					zw(data).find('loc').each(function(){
+						options = zw('#location').attr('options');
+						options[options.length] = new Option(zw(this).text() + ' [' + zw(this).attr('id') + '] ', zw(this).attr('id') + '|' + zw(this).text());
 					});
-					jQuery('#location').show();
-					jQuery('#imgLoader').hide();
-				}, 'xml');
+					zw('#location').show();
+					zw('#imgLoader').hide();
+					zw('#btnZigWeatherReset').show();
+				}
+
+				function handleError(request, status){
+					// this will handle timeouts but for some reason is overridden by .ajaxError for other error types, when that has been declared
+					zw('#imgLoader').hide();
+					zw('#spnAlert').html('Error: ' + status);
+				}
+
+
+
 			});
 		});
 		</script>

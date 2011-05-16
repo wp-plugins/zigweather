@@ -4,7 +4,7 @@ Donate link: http://www.zigpress.com/donations/
 Tags: widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
 Requires at least: 3.1
 Tested up to: 3.1.2
-Stable tag: 0.9
+Stable tag: 0.9.1
 
 ZigWeather adds a sidebar widget to show your current weather.
 
@@ -36,6 +36,8 @@ For further information and support, please visit [the ZigWeather home page](htt
 
 == Changelog ==
 
+= 0.9.1 =
+* Rewrote AJAX location search code
 = 0.9 =
 * Cache system completely overhauled
 * Added AJAX error handling to make problem resolution easier
