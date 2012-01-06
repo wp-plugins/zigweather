@@ -2,11 +2,11 @@
 /*
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/wordpress/plugins/zigweather/
-Description: Adds a sidebar widget to show your current weather. Data is provided by the weather.com XOAP feed.
+Description: THE WEB SERVICE USED BY THIS PLUGIN IS NO LONGER AVAILABLE AND THE PLUGIN IS NOT BEING DEVELOPED FURTHER.
 Author: ZigPress
-Version: 0.9.1
+Version: 0.9.2
 Requires at least: 3.1
-Tested up to: 3.1.2
+Tested up to: 3.3.1
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */

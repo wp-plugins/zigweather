@@ -3,24 +3,20 @@ Contributors: ZigPress
 Donate link: http://www.zigpress.com/donations/
 Tags: widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
 Requires at least: 3.1
-Tested up to: 3.1.2
-Stable tag: 0.9.1
+Tested up to: 3.3.1
+Stable tag: 0.9.2
 
-ZigWeather adds a sidebar widget to show your current weather.
+THE WEB SERVICE USED BY THIS PLUGIN IS NO LONGER AVAILABLE AND THE PLUGIN IS NOT BEING DEVELOPED FURTHER.
 
 == Description ==
+
+PLEASE NOTE: THE WEB SERVICE USED BY THIS PLUGIN IS NO LONGER AVAILABLE AND THE PLUGIN IS NOT BEING DEVELOPED FURTHER.
 
 ZigWeather adds a sidebar widget to show your current weather. Inspired by 'Weather Widget' by James Wilson but completely rewritten using OOP techniques, with a simpler control panel and extra features. Weather data is provided by the weather.com XOAP feed.
 
 Requires WordPress 3.1+ and PHP 5.2.4+.
 
 For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/wordpress/plugins/zigweather/).
-
-= To Do =
-
-* Settings page form validation
-* Convert to new-style multi-widget
-* Make styling easier to manage
 
 == Installation ==
 
@@ -36,6 +32,8 @@ For further information and support, please visit [the ZigWeather home page](htt
 
 == Changelog ==
 
+= 0.9.2 =
+* End of life notice
 = 0.9.1 =
 * Rewrote AJAX location search code
 = 0.9 =
