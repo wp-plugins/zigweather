@@ -1,37 +1,63 @@
 === ZigWeather ===
 Contributors: ZigPress
 Donate link: http://www.zigpress.com/donations/
-Tags: widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
-Requires at least: 3.1
+Tags: widget, multi-widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
+Requires at least: 3.3
 Tested up to: 3.3.1
-Stable tag: 0.9.2
+Stable tag: 2.0
 
-THE WEB SERVICE USED BY THIS PLUGIN IS NO LONGER AVAILABLE AND THE PLUGIN IS NOT BEING DEVELOPED FURTHER.
+Now reborn using a different API, ZigWeather gives you a multi-widget to show weather on your site.
 
 == Description ==
 
-PLEASE NOTE: THE WEB SERVICE USED BY THIS PLUGIN IS NO LONGER AVAILABLE AND THE PLUGIN IS NOT BEING DEVELOPED FURTHER.
+ZigWeather gives you a multi-widget to show weather on your site.
 
-ZigWeather adds a sidebar widget to show your current weather. Inspired by 'Weather Widget' by James Wilson but completely rewritten using OOP techniques, with a simpler control panel and extra features. Weather data is provided by the weather.com XOAP feed.
+Anyone using earlier (pre 2.0) versions of this plugin should try this new version, which uses a different online weather service for data capture, and a different method of setting locations. This is the plugin that wouldn't die!
 
-Requires WordPress 3.1+ and PHP 5.2.4+.
+Please note that caching is now fixed automatically to comply with the terms of use of the World Weather Online API, and the credit link should not be removed.
 
-For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/wordpress/plugins/zigweather/).
+Requires WordPress 3.3+ and PHP 5.2.4+.
+
+For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/plugins/zigweather/).  Support will ONLY be provided in response to comments posted on that page.
 
 == Installation ==
 
 1. Go to Admin > Plugins > Add New and enter ZigWeather in the search box.
 2. Follow the prompts to install and activate the plugin.
-3. Go to the settings page and change the settings as you need, then place the widget.
+3. Go to the settings page and follow the link to get a World Weather Online API key (it's free).
+4. Enter this key on the settings page and save.
+5. Go to the widgets control page and place the widget, entering a location in the widget control panel.
 
 If upgrading manually, you MUST deactivate before updating and reactivate afterwards.
 
 == Frequently Asked Questions ==
 
-For further information and support, please visit [the ZigWeather home page](http://www.zigpress.com/wordpress/plugins/zigweather/).  Support will ONLY be provided in response to comments posted on that page.
+= What can I enter in the location box in the widget control panel? =
+
+You can try a few different formats in order to get the widget to show weather for your desired location:
+
+city
+city, state (USA only)
+city, state, country
+city, country
+postalcode (UK, USA, Canada only)
+
+If the widget displays "Data cannot be shown" or shows the wrong location, try a different format or a different nearby location. For example, in Malta, the API doesn't know where the town "Bugibba" is, but it is happy to take "Naxxar" which is a slightly larger town about 3km away.
+
+= How often is the information refreshed? =
+
+The plugin gets fresh information each half hour, and whenever you change a location. However, the World Weather Online service only updates its API data every 3 to 4 hours. But hey, it's free.
+
+More information can be found at [World Weather Online](http://www.worldweatheronline.com/weather-api.aspx).
+
+= I don't like the way it looks. What can I do? =
+
+Go to the settings page and untick the box marked "Load stylesheet" then save. You will now need to add some styles in your theme stylesheet.
 
 == Changelog ==
 
+= 2.0 =
+* Total rebuild using different API
 = 0.9.2 =
 * End of life notice
 = 0.9.1 =
