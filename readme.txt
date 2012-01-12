@@ -36,11 +36,11 @@ If upgrading manually, you MUST deactivate before updating and reactivate afterw
 
 You can try a few different formats in order to get the widget to show weather for your desired location:
 
-city
-city, state (USA only)
-city, state, country
-city, country
-postalcode (UK, USA, Canada only)
+* city
+* city, state (USA only)
+* city, state, country
+* city, country
+* postalcode (UK, USA, Canada only)
 
 If the widget displays "Data cannot be shown" or shows the wrong location, try a different format or a different nearby location. For example, in Malta, the API doesn't know where the town "Bugibba" is, but it is happy to take "Naxxar" which is a slightly larger town about 3km away.
 
