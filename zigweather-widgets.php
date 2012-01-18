@@ -72,6 +72,14 @@ class widget_zigweather extends WP_Widget
 				<div class="temperature">Temperature: <?php echo $info['data']['current_condition'][0]['temp_C']?>&deg;C</div>
 				<div class="wind">Wind: <?php echo $info['data']['current_condition'][0]['windspeedKmph']?> km/h <?php echo $info['data']['current_condition'][0]['winddir16Point']?></div>
 				<div class="humidity">Humidity: <?php echo $info['data']['current_condition'][0]['humidity']?>%</div>
+				<?php
+				if ($zigweather->options['show_fetched'] == 1)
+					{
+					?>
+					<div class="fetched">Fetched <?php echo date('H:i', $zigweather->options['cache_time'][$widget_id] + (3600 * get_option('gmt_offset')))?></div>
+					<?php
+					}
+				?>
 				<div class="credit">Powered by <a href="http://www.worldweatheronline.com/" title="Free local weather content provider" target="_blank">World Weather Online</a></div>
 				</div><!--/zigweather-wrapper-->
 				<?php

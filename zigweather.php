@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.0
+Version: 2.0.1
 Author: ZigPress
 Requires at least: 3.3
 Tested up to: 3.3.1
@@ -68,6 +68,7 @@ class zigweather
 		add_action('admin_init', array($this, 'action_admin_init'));
 		add_action('admin_head', array($this, 'action_admin_head'));
 		add_action('admin_menu', array($this, 'action_admin_menu'));
+		add_filter('plugin_row_meta', array($this, 'filter_plugin_row_meta'), 10, 2 );
 		}
 
 
@@ -99,9 +100,9 @@ class zigweather
 
 	public function action_wp_enqueue_scripts()
 		{
-		if ($this->options['load_css'] == 1)
+		if ($this->options['which_css'] > 0)
 			{
-			wp_enqueue_style('zigweather', $this->plugin_folder . 'css/zigweather.css');
+			wp_enqueue_style('zigweather', $this->plugin_folder . 'css/zigweather.' . $this->options['which_css'] . '.css');
 			}
 		}
 
@@ -126,6 +127,17 @@ class zigweather
 		}
 
 
+	# FILTERS
+
+
+	public function filter_plugin_row_meta($links, $file) 
+		{
+		$plugin = plugin_basename(__FILE__);
+		if ($file == $plugin) return array_merge($links, array('<a target="_blank" href="http://www.zigpress.com/donations/">Donate</a>'));
+		return $links;
+		}
+
+
 	# DATABASE
 
 
@@ -143,7 +155,7 @@ class zigweather
 		<div class="wrap-left">
 		<div class="col-pad">
 
-		<p>The location to retrieve weather data for is now entered in each widget control panel.</p>
+		<p>The location to retrieve weather data for is now entered in each widget control panel. The options below affect all widgets.</p>
 
 		<form action="<?php echo $_SERVER['PHP_SELF']?>?page=zigweather-options" method="post">
 		<input type="hidden" name="zigaction" value="zigweather-admin-options-update" />
@@ -155,7 +167,16 @@ class zigweather
 		</tr>
 		<tr valign="top">
 		<th scope="row" class="right">Load stylesheet:</th>
-		<td><input class="checkbox" type="checkbox" name="load_css" id="load_css" value="1" <?php if ($this->options['load_css'] == 1) { echo('checked="checked"'); } ?> /></td>
+		<td><select name="which_css" id="which_css">
+		<option value="0">[none]</option>
+		<option value="1" <?php echo ($this->options['which_css'] == '1') ? 'selected="selected"' : ''?> >Layout Only</option>
+		<option value="2" <?php echo ($this->options['which_css'] == '2') ? 'selected="selected"' : ''?> >Light Theme</option>
+		<option value="3" <?php echo ($this->options['which_css'] == '3') ? 'selected="selected"' : ''?> >Dark Theme</option>
+		</select> <span class="description">You can still put overrides in your theme stylesheet</span></td>
+		</tr>
+		<tr valign="top">
+		<th scope="row" class="right">Show time fetched:</th>
+		<td><input class="checkbox" type="checkbox" name="show_fetched" id="show_fetched" value="1" <?php if ($this->options['show_fetched'] == 1) { echo('checked="checked"'); } ?> /></td>
 		</tr>
 		<tr valign="top">
 		<th scope="row" class="right">Next deactivation removes:</th>
