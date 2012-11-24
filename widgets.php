@@ -2,44 +2,40 @@
 
 
 class widget_zigweather extends WP_Widget 
-	{
-	public function widget_zigweather() 
-		{
+{
+
+
+	public function widget_zigweather() {
 		parent::WP_Widget(false, $name = 'ZigWeather', array('description'=>"Shows a weather panel"));	
-		}
+	}
 
 
-	public function widget($args, $instance) 
-		{		
+	public function widget($args, $instance) {		
 		global $zigweather;
 		extract($args);
 		$title = esc_attr($instance['title']);
 		$location = esc_attr($instance['location']);
-		if ($zigweather->options['clearcaches'] == 1)
-			{
+		if ($zigweather->options['clearcaches'] == 1){
 			$zigweather->options['cache_time'] = array(); # clear ALL
 			$zigweather->options['cache_content'] = array();
 			$zigweather->options['clearcaches'] = 0;
 			update_option("zigweather2_options", $zigweather->options);
-			}
-		if (!$cache_time = $zigweather->options['cache_time'][$widget_id])
-			{
+		}
+		if (!$cache_time = $zigweather->options['cache_time'][$widget_id]){
 			# couldn't get cache time so initialise it
 			$cache_time = 0;
 			$zigweather->options['cache_time'][$widget_id] = $cache_time;
 			update_option("zigweather2_options", $zigweather->options);
-			}
-		if (!$cache_content = $zigweather->options['cache_content'][$widget_id])
-			{
+		}
+		if (!$cache_content = $zigweather->options['cache_content'][$widget_id]){
 			# couldn't get cache content so initialise it - and make sure the time is reset too
 			$cache_time = 0;
 			$cache_content = '';
 			$zigweather->options['cache_time'][$widget_id] = $cache_time;
 			$zigweather->options['cache_content'][$widget_id] = $cache_content;
 			update_option("zigweather2_options", $zigweather->options);
-			}
-		if (time() - 1800 > $cache_time) # more than 30 minutes old
-			{
+		}
+		if (time() - 1800 > $cache_time) { # 30 minutes
 			# get feed and cache it
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, 'http://free.worldweatheronline.com/feed/weather.ashx?key=' . $zigweather->options['key'] . '&q=' . urlencode($location) . '&format=json');
@@ -47,100 +43,104 @@ class widget_zigweather extends WP_Widget
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 			$data = curl_exec($ch);
 			curl_close($ch);
-			if ($info = json_decode($data, true))
-				{
+			if ($info = json_decode($data, true)) {
 				$cache_time = time();
 				$cache_content = $data;
 				$zigweather->options['cache_time'][$widget_id] = $cache_time;
 				$zigweather->options['cache_content'][$widget_id] = $cache_content;
 				update_option("zigweather2_options", $zigweather->options);
-				}
 			}
+		}
 		# if ok, decode json and output the panel
 		echo $before_widget; 
 		if ($title) echo $before_title . $title . $after_title; 
 		$error = false;
-		if ($info = json_decode($cache_content, true))
-			{
-			if ($info['data']['request'][0]['query'] != '')
-				{
+		if ($info = json_decode($cache_content, true)) {
+			if ($info['data']['request'][0]['query'] != '') {
 				?>
 				<div class="zigweather-wrapper">
 				<div class="location"><?php echo $info['data']['request'][0]['query']?></div>
 				<div class="icon"><img src="<?php echo $info['data']['current_condition'][0]['weatherIconUrl'][0]['value']?>" alt="" /></div>
 				<div class="description"><?php echo $info['data']['current_condition'][0]['weatherDesc'][0]['value']?></div>
-				<div class="temperature">Temperature: <?php echo $info['data']['current_condition'][0]['temp_C']?>&deg;C</div>
-				<div class="wind">Wind: <?php echo $info['data']['current_condition'][0]['windspeedKmph']?> km/h <?php echo $info['data']['current_condition'][0]['winddir16Point']?></div>
+				<?php
+				if ($zigweather->options['which_temp'] == 'F') {
+					?>
+					<div class="temperature">Temperature: <?php echo $info['data']['current_condition'][0]['temp_F']?>&deg;F</div>
+					<?php
+				} else {
+					?>
+					<div class="temperature">Temperature: <?php echo $info['data']['current_condition'][0]['temp_C']?>&deg;C</div>
+					<?php
+				}
+				if ($zigweather->options['which_speed'] == 'M') {
+					?>
+					<div class="wind">Wind: <?php echo $info['data']['current_condition'][0]['windspeedMiles']?> mph <?php echo $info['data']['current_condition'][0]['winddir16Point']?></div>
+					<?php
+				} else {
+					?>
+					<div class="wind">Wind: <?php echo $info['data']['current_condition'][0]['windspeedKmph']?> km/h <?php echo $info['data']['current_condition'][0]['winddir16Point']?></div>
+					<?php
+				}
+				?>
 				<div class="humidity">Humidity: <?php echo $info['data']['current_condition'][0]['humidity']?>%</div>
 				<?php
-				if ($zigweather->options['show_fetched'] == 1)
-					{
+				if ($zigweather->options['show_fetched'] == 1) {
 					?>
 					<div class="fetched">Fetched <?php echo date('H:i', $zigweather->options['cache_time'][$widget_id] + (3600 * get_option('gmt_offset')))?></div>
 					<?php
-					}
+				}
 				?>
 				<div class="credit">Powered by <a href="http://www.worldweatheronline.com/" title="Free local weather content provider" target="_blank">World Weather Online</a></div>
+				<div class="credit">Widget by <a href="http://www.zigpress.com/" title="Words about WordPress from Malta" target="_blank">ZigPress</a></div>
 				</div><!--/zigweather-wrapper-->
 				<?php
-				}
-			else
-				{
+			} else {
 				$error = true;
-				}
 			}
-		else
-			{
+		} else {
 			$error = true;
-			}
-		if ($error)
-			{
+		}
+		if ($error) {
 			?>
 			<div class="zigweather-error">Data cannot be shown</div>
 			<?php
-			}
-		echo $after_widget; 
 		}
+		echo $after_widget; 
+	}
 
 
-	public function update($new_instance, $old_instance) 
-		{
+	public function update($new_instance, $old_instance) {
 		$instance = $old_instance;
 		$instance['title'] = strip_tags($new_instance['title']);
 		# did they change location?
-		if ($instance['location'] != strip_tags($new_instance['location'])) 
-			{
+		if ($instance['location'] != strip_tags($new_instance['location'])) {
 			global $zigweather;
 			$zigweather->options['clearcaches'] = 1;
 			update_option("zigweather2_options", $zigweather->options);
-			}
+		}
 		$instance['location'] = strip_tags($new_instance['location']);
 		return $instance;
-		}
+	}
 
 
-	public function form($instance) 
-		{
+	public function form($instance) {
 		global $zigweather;
 		$title = esc_attr($instance['title']);
 		$location = esc_attr($instance['location']);
-		if ($zigweather->options['key'] == '')
-			{
+		if ($zigweather->options['key'] == '') {
 			?>
 			<p>Enter the API key on the <a href="<?php bloginfo('url')?>/wp-admin/options-general.php?page=zigweather-options">settings page</a>!</p>
 			<?php
-			}
-		else
-			{
+		} else {
 			?>
 			<p>Title: <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
 			<p>Location: <input class="widefat" id="<?php echo $this->get_field_id('location'); ?>" name="<?php echo $this->get_field_name('location'); ?>" type="text" value="<?php echo $location; ?>" /></p>
 			<?php 
-			}
 		}
+	}
 
 
-	} # end of class
+} # end of class
 
 
 # EOF
