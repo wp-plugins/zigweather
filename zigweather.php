@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.1
+Version: 2.2
 Author: ZigPress
 Requires at least: 3.3
 Tested up to: 3.4.2
@@ -31,7 +31,6 @@ Foundation Inc, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
 
-require_once dirname(__FILE__) . '/optionbuilder.php';
 require_once dirname(__FILE__) . '/admincallbacks.php';
 require_once dirname(__FILE__) . '/widgets.php';
 
@@ -63,14 +62,25 @@ if (!class_exists('zigweather')) {
 			add_action('widgets_init', create_function('', 'return register_widget("widget_zigweather");'));
 			add_action('wp_enqueue_scripts', array($this, 'action_wp_enqueue_scripts'));
 			add_action('admin_init', array($this, 'action_admin_init'));
-			add_action('admin_head', array($this, 'action_admin_head'));
+			add_action('admin_enqueue_scripts', array($this, 'action_admin_enqueue_scripts'));
 			add_action('admin_menu', array($this, 'action_admin_menu'));
 			add_filter('plugin_row_meta', array($this, 'filter_plugin_row_meta'), 10, 2 );
 		}
 	
 	
 		public function activate() {
-			new zigweather_optionbuilder();
+			if (!$this->options = get_option('zigweather2_options')) { 
+				$this->options = array(); 
+				add_option('zigweather2_options', $this->options);
+				$this->options['key'] = '';
+				$this->options['which_css'] = '2'; # light option
+				$this->options['which_temp'] = 'C'; # celsius
+				$this->options['which_speed'] = 'K'; # kmph
+				$this->options['show_fetched'] = '1'; # time fetched
+				$this->options['hide_credit'] = '0'; # hide credit
+			}
+			$this->options['delete_options_next_deactivate'] = 0; # always reset this
+			update_option("zigweather2_options", $this->options);
 		}
 	
 	
@@ -83,7 +93,9 @@ if (!class_exists('zigweather')) {
 	
 	
 		public function action_wp_enqueue_scripts() {
-			if ($this->options['which_css'] > 0) wp_enqueue_style('zigweather', $this->plugin_folder . 'css/zigweather.' . $this->options['which_css'] . '.css');
+			if ($this->options['which_css'] > 0) { 
+				wp_enqueue_style('zigweather', $this->plugin_folder . 'css/zigweather.' . $this->options['which_css'] . '.css', false, rand());
+			}
 		}
 	
 	
@@ -92,10 +104,8 @@ if (!class_exists('zigweather')) {
 		}
 	
 	
-		public function action_admin_head() {
-			?>
-			<link rel="stylesheet" href="<?php echo $this->plugin_folder?>css/admin.css?<?php echo rand()?>" type="text/css" media="screen" />
-			<?php
+		public function action_admin_enqueue_scripts() {
+			wp_enqueue_style('zigweatheradmin', $this->plugin_folder . 'css/admin.css', false, rand());
 		}
 	
 	
@@ -114,14 +124,11 @@ if (!class_exists('zigweather')) {
 		}
 	
 	
-		# DATABASE
-	
-	
 		# ADMIN CONTENT
 	
 	
 		public function admin_page_options() {
-			if (!current_user_can('manage_options')) { wp_die(__('You are not allowed to do this.', 'zigcrm')); }
+			if (!current_user_can('manage_options')) { wp_die('You are not allowed to do this.'); }
 			if ($this->result_type != '') echo $this->show_result($this->result_type, $this->result_message);
 			?>
 			<div class="wrap zigweather-admin">
@@ -129,16 +136,14 @@ if (!class_exists('zigweather')) {
 			<h2>ZigWeather - Options</h2>
 			<div class="wrap-left">
 			<div class="col-pad">
-	
 			<p>The location to retrieve weather data for is now entered in each widget control panel. The options below affect all widgets.</p>
-	
 			<form action="<?php echo $_SERVER['PHP_SELF']?>?page=zigweather-options" method="post">
 			<input type="hidden" name="zigaction" value="zigweather-admin-options-update" />
 			<?php wp_nonce_field('zigpress_nonce'); ?>
 			<table class="form-table">
 			<tr valign="top">
 			<th scope="row" class="right">World Weather Online API key:</th>
-			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Sign up at <a target="_blank" href="http://www.worldweatheronline.com/register.aspx">http://www.worldweatheronline.com/register.aspx</a></span></td>
+			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key at <a target="_blank" href="http://www.worldweatheronline.com/register.aspx">http://www.worldweatheronline.com/register.aspx</a></span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Load stylesheet:</th>
@@ -168,8 +173,16 @@ if (!class_exists('zigweather')) {
 			<td><input class="checkbox" type="checkbox" name="show_fetched" id="show_fetched" value="1" <?php if ($this->options['show_fetched'] == 1) { echo('checked="checked"'); } ?> /></td>
 			</tr>
 			<tr valign="top">
-			<th scope="row" class="right">Next deactivation removes:</th>
-			<td><input class="checkbox" type="checkbox" name="delete_options_next_deactivate" id="delete_options_next_deactivate" value="1" <?php if ($this->options['delete_options_next_deactivate'] == 1) { echo('checked="checked"'); } ?> /> Options &nbsp; &nbsp;</td>
+			<th scope="row" class="right">Hide ZigPress credit:</th>
+			<td><input class="checkbox" type="checkbox" name="hide_credit" id="hide_credit" value="1" <?php if ($this->options['hide_credit'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Please consider leaving the credit visible or making a donation - thanks!</span></td>
+			</tr>
+			<tr valign="top">
+			<th scope="row" class="right">Show debug information below:</th>
+			<td><input class="checkbox" type="checkbox" name="debug" id="debug" value="1" <?php if ($this->options['debug'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Shows the current option data held by the plugin</span></td>
+			</tr>
+			<tr valign="top">
+			<th scope="row" class="right">Next deactivation removes options:</th>
+			<td><input class="checkbox" type="checkbox" name="delete_options_next_deactivate" id="delete_options_next_deactivate" value="1" <?php if ($this->options['delete_options_next_deactivate'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">ZigPress plugins clean up after themselves</span></td>
 			</tr>
 			</table>
 			<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Save Changes" /></p> 
@@ -206,6 +219,14 @@ if (!class_exists('zigweather')) {
 			</table>
 			</div><!--wrap-right-->
 			<div class="clearer">&nbsp;</div>
+			<?php
+			if ($this->options['debug'] == '1') {
+				?>
+				<h3>Debug Information</h3>
+				<pre><?php print_r($this->options)?></pre>
+				<?php
+			}
+			?>
 			</div><!--/wrap-->
 			<?php
 		}
@@ -274,22 +295,6 @@ if (!class_exists('zigweather')) {
 			$data = array();
 			global $wpdb;
 			$wpdb->query("SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = {$id} ");
-			foreach($wpdb->last_result as $k => $v) {
-				$data[$v->meta_key] = $v->meta_value;
-			}
-			return $data;
-		}
-	
-	
-		function get_all_user_meta($id = 0) {
-			if ($id == 0) {
-				global $current_user;
-				get_currentuserinfo();
-				$id = $current_user->ID;
-			}
-			$data = array();
-			global $wpdb;
-			$wpdb->query("SELECT meta_key, meta_value FROM {$wpdb->usermeta} WHERE user_id = {$id} ");
 			foreach($wpdb->last_result as $k => $v) {
 				$data[$v->meta_key] = $v->meta_value;
 			}

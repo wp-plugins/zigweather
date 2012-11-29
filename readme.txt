@@ -4,7 +4,7 @@ Donate link: http://www.zigpress.com/donations/
 Tags: widget, multi-widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 2.1
+Stable tag: 2.2
 
 Now reborn using a different API, ZigWeather gives you a multi-widget to show weather on your site.
 
@@ -27,8 +27,6 @@ For further information and support, please visit [the ZigWeather home page](htt
 3. Go to the settings page and follow the link to get a World Weather Online API key (it's free).
 4. Enter this key on the settings page and save.
 5. Go to the widgets control page and place the widget, entering a location in the widget control panel.
-
-If upgrading manually, you MUST deactivate before updating and reactivate afterwards.
 
 == Frequently Asked Questions ==
 
@@ -56,11 +54,19 @@ Go to the settings page and set the "Load stylesheet" dropdown to "None" then sa
 
 == Changelog ==
 
+= 2.2 =
+* Added ability to hide ZigPress credit (but please consider leaving it visible or making a donation)
+* Added ability to show debug information on settings page (mainly for plugin creator's benefit)
+* More code refactoring
+* Minor admin CSS improvements
+* Widget control panel now contains advice about entering the location
+* Browsers are prevented from caching the plugin's stylesheets
 = 2.1 =
 * Added ability to show temperatures in celsius or fahrenheit
 * Added ability to show windspeed in km/h or mph
 * Coding style improvements
 * Code refactoring
+* Added ZigPress credit
 * Verified compatibility with WordPress 3.4.2
 = 2.0.1 =
 * Donation link on plugins list page, added fetched time (display optional), removed unused files from SVN, added basic theme chooser (to be improved later)

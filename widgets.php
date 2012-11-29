@@ -6,7 +6,7 @@ class widget_zigweather extends WP_Widget
 
 
 	public function widget_zigweather() {
-		parent::WP_Widget(false, $name = 'ZigWeather', array('description'=>"Shows a weather panel"));	
+		parent::WP_Widget(false, $name = 'ZigWeather', array('description'=>"Shows a weather panel"), array('width'=>'300'));	
 	}
 
 
@@ -90,8 +90,14 @@ class widget_zigweather extends WP_Widget
 					<?php
 				}
 				?>
-				<div class="credit">Powered by <a href="http://www.worldweatheronline.com/" title="Free local weather content provider" target="_blank">World Weather Online</a></div>
-				<div class="credit">Widget by <a href="http://www.zigpress.com/" title="Words about WordPress from Malta" target="_blank">ZigPress</a></div>
+				<div class="credit credit1">Powered by <a href="http://www.worldweatheronline.com/" title="Free local weather content provider" target="_blank">World Weather Online</a></div>
+				<?php
+				if ($zigweather->options['hide_credit'] != '1') {
+					?>
+					<div class="credit credit2">Widget by <a href="http://www.zigpress.com/" title="Words about WordPress from Malta" target="_blank">ZigPress</a></div>
+					<?php
+				}
+				?>
 				</div><!--/zigweather-wrapper-->
 				<?php
 			} else {
@@ -135,6 +141,15 @@ class widget_zigweather extends WP_Widget
 			?>
 			<p>Title: <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
 			<p>Location: <input class="widefat" id="<?php echo $this->get_field_id('location'); ?>" name="<?php echo $this->get_field_name('location'); ?>" type="text" value="<?php echo $location; ?>" /></p>
+			<p>You can try a few different formats in order to get the widget to show weather for your desired location:</p>
+			<ul class="zigweather_widget_help">
+			<li>city</li>
+			<li>city, state (USA only)</li>
+			<li>city, state, country</li>
+			<li>city, country</li>
+			<li>postal code (UK, USA, Canada)</li>
+			</ul>
+			<p>If the widget displays "Data cannot be shown" or shows the wrong location, try a different format or a different nearby location.</p>
 			<?php 
 		}
 	}

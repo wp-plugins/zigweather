@@ -4,7 +4,6 @@
 .zigweather-admin .strong { font-weight:bold; }
 .zigweather-admin .center { text-align:center; }
 .zigweather-admin .right { text-align:right; }
-.zigweather-admin .mandatory { color:#e21; }
 .zigweather-admin .floatRight { float:right; display:inline; }
 .zigweather-admin .clearer { height:0px; clear:both; line-height:0px; overflow:hidden; font-size:0; }
 .zigweather-admin #icon-zigweather { background:url(../images/weather-few-clouds-32.png) center no-repeat !important; }
@@ -16,9 +15,8 @@
 .zigweather-admin img.icon { vertical-align:middle; margin-bottom:1px; }
 img.zigweather-icon { vertical-align:middle; margin-bottom:1px; }
 .zigweather-admin img.floatRight { margin-bottom:0; }
-.zigweather-admin form input.checkbox { vertical-align:middle; margin-bottom:1px; }
 
-
+table.form-table input.checkbox { vertical-align:baseline; }
 
 table.form-table .nowrap { white-space:nowrap; }
 table.form-table .right { text-align:right; }
@@ -37,3 +35,4 @@ table.form-table tr.topborder td { border-top:1px solid #d1e5ee; }
 
 button.button-primary { font-family:verdana; }
 
+ul.zigweather_widget_help { list-style:square outside; margin:0 0 10px 18px; }
