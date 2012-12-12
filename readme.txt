@@ -3,8 +3,8 @@ Contributors: ZigPress
 Donate link: http://www.zigpress.com/donations/
 Tags: widget, multi-widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
 Requires at least: 3.3
-Tested up to: 3.4.2
-Stable tag: 2.2
+Tested up to: 3.5
+Stable tag: 2.2.1
 
 Now reborn using a different API, ZigWeather gives you a multi-widget to show weather on your site.
 
@@ -54,6 +54,8 @@ Go to the settings page and set the "Load stylesheet" dropdown to "None" then sa
 
 == Changelog ==
 
+= 2.2.1 =
+* Verified compatibility with WordPress 3.5
 = 2.2 =
 * Added ability to hide ZigPress credit (but please consider leaving it visible or making a donation)
 * Added ability to show debug information on settings page (mainly for plugin creator's benefit)
