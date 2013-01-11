@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.1
+Version: 2.2.2
 Author: ZigPress
 Requires at least: 3.3
 Tested up to: 3.5
@@ -57,7 +57,6 @@ if (!class_exists('zigweather')) {
 			if (version_compare(phpversion(), '5.2.4', '<')) wp_die('ZigWeather requires PHP 5.2.4 or newer. Please update your server.'); 
 			if (version_compare($wp_version, '3.3', '<')) wp_die('ZigWeather requires WordPress 3.3 or newer. Please update your installation.'); 
 			$this->get_params();
-			if (!$this->options = get_option('zigweather2_options')) new zigweather_optionbuilder();
 			$this->callback_url = preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 			add_action('widgets_init', create_function('', 'return register_widget("widget_zigweather");'));
 			add_action('wp_enqueue_scripts', array($this, 'action_wp_enqueue_scripts'));
