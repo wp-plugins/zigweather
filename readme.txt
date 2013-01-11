@@ -4,7 +4,7 @@ Donate link: http://www.zigpress.com/donations/
 Tags: widget, multi-widget, sidebar, weather, worldwide, temperatures, wind, rainfall, humidity, zig, zigpress
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 
 Now reborn using a different API, ZigWeather gives you a multi-widget to show weather on your site.
 
@@ -35,9 +35,9 @@ For further information and support, please visit [the ZigWeather home page](htt
 You can try a few different formats in order to get the widget to show weather for your desired location:
 
 * city
-* city, state (USA only)
-* city, state, country
 * city, country
+* city, state, country
+* city, state (USA only)
 * postalcode (UK, USA, Canada only)
 
 If the widget displays "Data cannot be shown" or shows the wrong location, try a different format or a different nearby location. For example, in Malta, the API doesn't know where the town "Bugibba" is, but it is happy to take "Naxxar" which is a slightly larger town about 3km away.
@@ -54,6 +54,9 @@ Go to the settings page and set the "Load stylesheet" dropdown to "None" then sa
 
 == Changelog ==
 
+= 2.2.3 =
+* Fixed further fatal error on activation - really not sure what I was smoking when I released 2.2.1 and 2.2.2
+* Some code modularisation to allow use by external code
 = 2.2.2 =
 * Fixed fatal error on first time activation
 = 2.2.1 =

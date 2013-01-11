@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.2
+Version: 2.2.3
 Author: ZigPress
 Requires at least: 3.3
 Tested up to: 3.5
@@ -13,7 +13,7 @@ License: GPLv2
 
 
 /*
-Copyright (c) 2010-2012 ZigPress
+Copyright (c) 2010-2013 ZigPress
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -64,6 +64,7 @@ if (!class_exists('zigweather')) {
 			add_action('admin_enqueue_scripts', array($this, 'action_admin_enqueue_scripts'));
 			add_action('admin_menu', array($this, 'action_admin_menu'));
 			add_filter('plugin_row_meta', array($this, 'filter_plugin_row_meta'), 10, 2 );
+			$this->options = get_option('zigweather2_options');
 		}
 	
 	
@@ -229,8 +230,103 @@ if (!class_exists('zigweather')) {
 			</div><!--/wrap-->
 			<?php
 		}
+		
+		
+		# FUNCTIONS
+		
+		
+		function maybe_clear_caches() {
+			if ($this->options['clearcaches'] == 1){
+				$this->options['cache_time'] = array(); # clear ALL
+				$this->options['cache_content'] = array();
+				$this->options['clearcaches'] = 0;
+				update_option("zigweather2_options", $this->options);
+			}
+		}
+
+
+		function maybe_clear_cache_time($widget_id) {
+			if (!$cache_time = $this->options['cache_time'][$widget_id]){
+				# couldn't get cache time so initialise it
+				$this->options['cache_time'][$widget_id] = 0;
+				update_option("zigweather2_options", $this->options);
+			}
+		}	
+		
+		
+		function maybe_clear_cache_content($widget_id) {
+			if (!$cache_content = $this->options['cache_content'][$widget_id]){
+				# couldn't get cache content so initialise it - and make sure the time is reset too
+				$this->options['cache_time'][$widget_id] = 0;
+				$this->options['cache_content'][$widget_id] = '';
+				update_option("zigweather2_options", $this->options);
+			}
+		}
+		
+		
+		function maybe_fetch_data($widget_id, $location) {
+			if (time() - 1800 > ($this->options['cache_time'][$widget_id])) { # 30 minutes
+				# get feed and cache it
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, 'http://free.worldweatheronline.com/feed/weather.ashx?key=' . $this->options['key'] . '&q=' . urlencode($location) . '&format=json');
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+				$data = curl_exec($ch);
+				curl_close($ch);
+				if ($info = json_decode($data, true)) {
+					$this->options['cache_time'][$widget_id] = time();
+					$this->options['cache_content'][$widget_id] = $data;
+					update_option("zigweather2_options", $this->options);
+				}
+			}
+		}
+		
+		
+		function get_location($info) {
+			return $info['data']['request'][0]['query'];
+		}
+		
+		
+		function get_tempf($info) {
+			return $info['data']['current_condition'][0]['temp_F'];
+		}
 	
 	
+		function get_tempc($info) {
+			return $info['data']['current_condition'][0]['temp_C'];
+		}
+		
+		
+		function get_speedm($info) {
+			return $info['data']['current_condition'][0]['windspeedMiles'];
+		}
+		
+		
+		function get_speedk($info) {
+			return $info['data']['current_condition'][0]['windspeedKmph'];
+		}
+		
+		
+		function get_direction($info) {
+			return $info['data']['current_condition'][0]['winddir16Point'];
+		}
+		
+		
+		function get_humidity($info) {
+			return $info['data']['current_condition'][0]['humidity'];
+		}
+		
+		
+		function get_iconurl($info) {
+			return $info['data']['current_condition'][0]['weatherIconUrl'][0]['value'];
+		}
+		
+		
+		function get_description($info) {
+			return $info['data']['current_condition'][0]['weatherDesc'][0]['value'];
+		}
+
+
 		# UTILITIES
 	
 	
