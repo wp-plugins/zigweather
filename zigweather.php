@@ -3,10 +3,10 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.3
+Version: 2.2.4
 Author: ZigPress
-Requires at least: 3.3
-Tested up to: 3.5
+Requires at least: 3.5
+Tested up to: 3.5.2
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
@@ -55,7 +55,7 @@ if (!class_exists('zigweather')) {
 			$this->plugin_directory = WP_PLUGIN_DIR . '/' . dirname(plugin_basename(__FILE__)) . '/';
 			global $wp_version;
 			if (version_compare(phpversion(), '5.2.4', '<')) wp_die('ZigWeather requires PHP 5.2.4 or newer. Please update your server.'); 
-			if (version_compare($wp_version, '3.3', '<')) wp_die('ZigWeather requires WordPress 3.3 or newer. Please update your installation.'); 
+			if (version_compare($wp_version, '3.5', '<')) wp_die('ZigWeather requires WordPress 3.5 or newer. Please update your installation.'); 
 			$this->get_params();
 			$this->callback_url = preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 			add_action('widgets_init', create_function('', 'return register_widget("widget_zigweather");'));
@@ -137,13 +137,14 @@ if (!class_exists('zigweather')) {
 			<div class="wrap-left">
 			<div class="col-pad">
 			<p>The location to retrieve weather data for is now entered in each widget control panel. The options below affect all widgets.</p>
+			<p><strong>NOTE:</strong> if your key stops working, simply apply for a new one. World Weather Online changed their API in summer 2013.</p>
 			<form action="<?php echo $_SERVER['PHP_SELF']?>?page=zigweather-options" method="post">
 			<input type="hidden" name="zigaction" value="zigweather-admin-options-update" />
 			<?php wp_nonce_field('zigpress_nonce'); ?>
 			<table class="form-table">
 			<tr valign="top">
 			<th scope="row" class="right">World Weather Online API key:</th>
-			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key at <a target="_blank" href="http://www.worldweatheronline.com/register.aspx">http://www.worldweatheronline.com/register.aspx</a></span></td>
+			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key at <a target="_blank" href="http://developer.worldweatheronline.com/member/register">http://developer.worldweatheronline.com/member/register</a> (new link)</span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Load stylesheet:</th>
@@ -268,7 +269,13 @@ if (!class_exists('zigweather')) {
 			if (time() - 1800 > ($this->options['cache_time'][$widget_id])) { # 30 minutes
 				# get feed and cache it
 				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL, 'http://free.worldweatheronline.com/feed/weather.ashx?key=' . $this->options['key'] . '&q=' . urlencode($location) . '&format=json');
+
+				# old version
+				#curl_setopt($ch, CURLOPT_URL, 'http://free.worldweatheronline.com/feed/weather.ashx?key=' . $this->options['key'] . '&q=' . urlencode($location) . '&format=json');
+
+				# new version
+				curl_setopt($ch, CURLOPT_URL, 'http://api.worldweatheronline.com/free/v1/weather.ashx?key=' . $this->options['key'] . '&q=' . urlencode($location) . '&format=json');
+
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 				$data = curl_exec($ch);
