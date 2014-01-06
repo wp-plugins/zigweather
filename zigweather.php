@@ -3,17 +3,17 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.4
+Version: 2.2.5
 Author: ZigPress
 Requires at least: 3.5
-Tested up to: 3.5.2
+Tested up to: 3.8
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
 
 
 /*
-Copyright (c) 2010-2013 ZigPress
+Copyright (c) 2010-2014 ZigPress
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ if (!class_exists('zigweather')) {
 			$this->plugin_directory = WP_PLUGIN_DIR . '/' . dirname(plugin_basename(__FILE__)) . '/';
 			global $wp_version;
 			if (version_compare(phpversion(), '5.2.4', '<')) wp_die('ZigWeather requires PHP 5.2.4 or newer. Please update your server.'); 
-			if (version_compare($wp_version, '3.5', '<')) wp_die('ZigWeather requires WordPress 3.5 or newer. Please update your installation.'); 
+			if (version_compare($wp_version, '3.6', '<')) wp_die('ZigWeather requires WordPress 3.6 or newer. Please update your installation.'); 
 			$this->get_params();
 			$this->callback_url = preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
 			add_action('widgets_init', create_function('', 'return register_widget("widget_zigweather");'));
@@ -143,8 +143,8 @@ if (!class_exists('zigweather')) {
 			<?php wp_nonce_field('zigpress_nonce'); ?>
 			<table class="form-table">
 			<tr valign="top">
-			<th scope="row" class="right">World Weather Online API key:</th>
-			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key at <a target="_blank" href="http://developer.worldweatheronline.com/member/register">http://developer.worldweatheronline.com/member/register</a> (new link)</span></td>
+			<th scope="row" class="right">World Weather Online key:</th>
+			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key at <a target="_blank" href="http://developer.worldweatheronline.com/member/register">http://developer.worldweatheronline.com/member/register</a></span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Load stylesheet:</th>
@@ -178,12 +178,12 @@ if (!class_exists('zigweather')) {
 			<td><input class="checkbox" type="checkbox" name="hide_credit" id="hide_credit" value="1" <?php if ($this->options['hide_credit'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Please consider leaving the credit visible or making a donation - thanks!</span></td>
 			</tr>
 			<tr valign="top">
-			<th scope="row" class="right">Show debug information below:</th>
+			<th scope="row" class="right">Show debug info below:</th>
 			<td><input class="checkbox" type="checkbox" name="debug" id="debug" value="1" <?php if ($this->options['debug'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Shows the current option data held by the plugin</span></td>
 			</tr>
 			<tr valign="top">
-			<th scope="row" class="right">Next deactivation removes options:</th>
-			<td><input class="checkbox" type="checkbox" name="delete_options_next_deactivate" id="delete_options_next_deactivate" value="1" <?php if ($this->options['delete_options_next_deactivate'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">ZigPress plugins clean up after themselves</span></td>
+			<th scope="row" class="right">Deactivation kills options:</th>
+			<td><input class="checkbox" type="checkbox" name="delete_options_next_deactivate" id="delete_options_next_deactivate" value="1" <?php if ($this->options['delete_options_next_deactivate'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Remove stored options on next deactivation</span></td>
 			</tr>
 			</table>
 			<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Save Changes" /></p> 
@@ -208,10 +208,10 @@ if (!class_exists('zigweather')) {
 			</table>
 			<table class="widefat donate" cellspacing="0">
 			<thead>
-			<tr><th><img class="icon floatRight" src="<?php echo $this->plugin_folder?>images/favicon.zigpress.png" alt="Yes" title="Yes" />Brought to you by ZigPress</th></tr>
+			<tr><th><img class="icon floatRight" src="<?php echo $this->plugin_folder?>images/icon-32x32-zigpress-2013.png" alt="Yes" title="Yes" />Brought to you by ZigPress</th></tr>
 			</thead>
 			<tr><td>
-			<p><a href="http://www.zigpress.com/">ZigPress</a> is a technical blog aimed at WordPress users and developers. We have also released a number of free plugins to support the WordPress community.</p>
+			<p><a href="http://www.zigpress.com/">ZigPress</a> is engaged in WordPress consultancy, solutions and research. We have also released a number of free plugins to support the WordPress community.</p>
 			<p><a target="_blank" href="http://www.zigpress.com/plugins/zigweather/"><img class="icon" src="<?php echo $this->plugin_folder?>images/weather-few-clouds.png" alt="ZigWeather WordPress plugin by ZigPress" title="ZigWeather WordPress plugin by ZigPress" /> ZigWeather page</a></p>
 			<p><a target="_blank" href="http://www.zigpress.com/plugins/"><img class="icon" src="<?php echo $this->plugin_folder?>images/plugin.png" alt="WordPress plugins by ZigPress" title="WordPress plugins by ZigPress" /> Other ZigPress plugins</a></p>
 			<p><a target="_blank" href="http://www.facebook.com/zigpress"><img class="icon" src="<?php echo $this->plugin_folder?>images/facebook.png" alt="ZigPress on Facebook" title="ZigPress on Facebook" /> ZigPress on Facebook</a></p>

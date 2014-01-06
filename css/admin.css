@@ -6,7 +6,6 @@
 .zigweather-admin .right { text-align:right; }
 .zigweather-admin .floatRight { float:right; display:inline; }
 .zigweather-admin .clearer { height:0px; clear:both; line-height:0px; overflow:hidden; font-size:0; }
-.zigweather-admin #icon-zigweather { background:url(../images/weather-few-clouds-32.png) center no-repeat !important; }
 .zigweather-admin .wrap-left { float:left; display:inline; width:70%; }
 .zigweather-admin .wrap-right { float:right; display:inline; width:30%; }
 .zigweather-admin .donate form { float:right; display:inline; text-align:right; width:150px; }
