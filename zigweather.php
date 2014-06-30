@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.6
+Version: 2.2.7
 Author: ZigPress
 Requires at least: 3.6
 Tested up to: 3.9
@@ -100,7 +100,7 @@ if (!class_exists('zigweather')) {
 	
 	
 		public function action_admin_init() {
-			new zigweather_admincallbacks($this->params['zigaction']);
+			new zigweather_admincallbacks(@$this->params['zigaction']);
 		}
 	
 	
@@ -344,12 +344,12 @@ if (!class_exists('zigweather')) {
 				if (!is_array($this->params[$key])) { $this->params[$key] = strip_tags(stripslashes(trim($this->params[$key]))); }
 				# need to sanitise arrays as well really
 			}
-			if (!is_numeric($this->params['zigpage'])) { $this->params['zigpage'] = 1; }
-			if (($this->params['zigaction'] == '') && ($this->params['zigaction2'] != '')) { $this->params['zigaction'] = $this->params['zigaction2']; }
+			if (!is_numeric(@$this->params['zigpage'])) { $this->params['zigpage'] = 1; }
+			if ((@$this->params['zigaction'] == '') && (@$this->params['zigaction2'] != '')) { $this->params['zigaction'] = $this->params['zigaction2']; }
 			$this->result = '';
 			$this->result_type = '';
 			$this->result_message = '';
-			if ($this->result = base64_decode($this->params['r'])) list($this->result_type, $this->result_message) = explode('|', $this->result); # base64 for ease of encoding
+			if ($this->result = base64_decode(@$this->params['r'])) list($this->result_type, $this->result_message) = explode('|', $this->result); # base64 for ease of encoding
 		}
 	
 	
