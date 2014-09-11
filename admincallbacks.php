@@ -14,19 +14,19 @@ class zigweather_admincallbacks
 		if (!current_user_can('manage_options')) { wp_die('You are not allowed to do this.'); }
 		global $zigweather;
 		check_admin_referer('zigpress_nonce');
-		$zigweather->options['load_css'] = $zigweather->validate_as_integer(htmlspecialchars($zigweather->params['load_css']), 0, 0, 1);
-		$zigweather->options['which_css'] = $zigweather->validate_as_integer(htmlspecialchars($zigweather->params['which_css']), 0, 0, 3);
-		$zigweather->options['which_temp'] = ($zigweather->params['which_temp'] == 'F') ? 'F' : 'C';
-		$zigweather->options['which_speed'] = ($zigweather->params['which_speed'] == 'M') ? 'M' : 'K';
-		$zigweather->options['show_fetched'] = $zigweather->validate_as_integer(htmlspecialchars($zigweather->params['show_fetched']), 0, 0, 1);
-		$zigweather->options['hide_credit'] = $zigweather->validate_as_integer(htmlspecialchars($zigweather->params['hide_credit']), 0, 0, 1);
-		$zigweather->options['delete_options_next_deactivate'] = $zigweather->validate_as_integer(htmlspecialchars($zigweather->params['delete_options_next_deactivate']), 0, 0, 1);
-		$zigweather->options['debug'] = $zigweather->validate_as_integer(htmlspecialchars($zigweather->params['debug']), 0, 0, 1);
-		$zigweather->options['key'] = htmlspecialchars($zigweather->params['key']);
+		$zigweather->options['load_css'] = $zigweather->validate_as_integer(htmlspecialchars(@$zigweather->params['load_css']), 0, 0, 1);
+		$zigweather->options['which_css'] = $zigweather->validate_as_integer(htmlspecialchars(@$zigweather->params['which_css']), 0, 0, 3);
+		$zigweather->options['which_temp'] = (@$zigweather->params['which_temp'] == 'F') ? 'F' : 'C';
+		$zigweather->options['which_speed'] = (@$zigweather->params['which_speed'] == 'M') ? 'M' : 'K';
+		$zigweather->options['show_fetched'] = $zigweather->validate_as_integer(htmlspecialchars(@$zigweather->params['show_fetched']), 0, 0, 1);
+		$zigweather->options['hide_credit'] = $zigweather->validate_as_integer(htmlspecialchars(@$zigweather->params['hide_credit']), 0, 0, 1);
+		$zigweather->options['delete_options_next_deactivate'] = $zigweather->validate_as_integer(htmlspecialchars(@$zigweather->params['delete_options_next_deactivate']), 0, 0, 1);
+		$zigweather->options['debug'] = $zigweather->validate_as_integer(htmlspecialchars(@$zigweather->params['debug']), 0, 0, 1);
+		$zigweather->options['key'] = htmlspecialchars(@$zigweather->params['key']);
 		# re-save options
 		update_option("zigweather2_options", $zigweather->options);
 		$zigweather->result = 'OK|Options saved.'; 
-		ob_clean();
+		if (ob_get_status()) ob_clean();
 		wp_redirect($_SERVER['PHP_SELF'] . '?page=zigweather-options&r=' . base64_encode($zigweather->result));
 		exit();
 	}

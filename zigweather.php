@@ -3,10 +3,10 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.7
+Version: 2.2.8
 Author: ZigPress
 Requires at least: 3.6
-Tested up to: 3.9
+Tested up to: 4.0
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
@@ -38,8 +38,9 @@ require_once dirname(__FILE__) . '/widgets.php';
 if (!class_exists('zigweather')) {
 
 
-	class zigweather
-		{
+	class zigweather {
+	
+
 		public $plugin_folder;
 		public $plugin_directory;
 		public $options;
@@ -78,6 +79,7 @@ if (!class_exists('zigweather')) {
 				$this->options['which_speed'] = 'K'; # kmph
 				$this->options['show_fetched'] = '1'; # time fetched
 				$this->options['hide_credit'] = '0'; # hide credit
+				$this->options['debug'] = '0'; # debug
 			}
 			$this->options['delete_options_next_deactivate'] = 0; # always reset this
 			update_option("zigweather2_options", $this->options);
@@ -94,7 +96,7 @@ if (!class_exists('zigweather')) {
 	
 		public function action_wp_enqueue_scripts() {
 			if ($this->options['which_css'] > 0) { 
-				wp_enqueue_style('zigweather', $this->plugin_folder . 'css/zigweather.' . $this->options['which_css'] . '.css', false, rand());
+				wp_enqueue_style('zigweather', $this->plugin_folder . 'css/zigweather.' . $this->options['which_css'] . '.css', false, date('Ymd'));
 			}
 		}
 	
@@ -105,7 +107,7 @@ if (!class_exists('zigweather')) {
 	
 	
 		public function action_admin_enqueue_scripts() {
-			wp_enqueue_style('zigweatheradmin', $this->plugin_folder . 'css/admin.css', false, rand());
+			wp_enqueue_style('zigweatheradmin', $this->plugin_folder . 'css/admin.css', false, date('Ymd'));
 		}
 	
 	
@@ -119,7 +121,11 @@ if (!class_exists('zigweather')) {
 	
 		public function filter_plugin_row_meta($links, $file) {
 			$plugin = plugin_basename(__FILE__);
-			if ($file == $plugin) return array_merge($links, array('<a target="_blank" href="http://www.zigpress.com/donations/">Donate</a>'));
+			$newlinks = array(
+				'<a target="_blank" href="http://www.zigpress.com/donations/">Donate</a>',
+				'<a href="' . get_admin_url() . 'options-general.php?page=zigweather-options">Settings</a>',
+			);
+			if ($file == $plugin) return array_merge($links, $newlinks);
 			return $links;
 		}
 	
@@ -171,19 +177,19 @@ if (!class_exists('zigweather')) {
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Show time fetched:</th>
-			<td><input class="checkbox" type="checkbox" name="show_fetched" id="show_fetched" value="1" <?php if ($this->options['show_fetched'] == 1) { echo('checked="checked"'); } ?> /></td>
+			<td><input class="checkbox" type="checkbox" name="show_fetched" id="show_fetched" value="1" <?php if (@$this->options['show_fetched'] == 1) { echo('checked="checked"'); } ?> /></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Hide ZigPress credit:</th>
-			<td><input class="checkbox" type="checkbox" name="hide_credit" id="hide_credit" value="1" <?php if ($this->options['hide_credit'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Please consider leaving the credit visible or making a donation - thanks!</span></td>
+			<td><input class="checkbox" type="checkbox" name="hide_credit" id="hide_credit" value="1" <?php if (@$this->options['hide_credit'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Please consider leaving the credit visible or making a donation - thanks!</span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Show debug info below:</th>
-			<td><input class="checkbox" type="checkbox" name="debug" id="debug" value="1" <?php if ($this->options['debug'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Shows the current option data held by the plugin</span></td>
+			<td><input class="checkbox" type="checkbox" name="debug" id="debug" value="1" <?php if (@$this->options['debug'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Shows the current option data held by the plugin</span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Deactivation kills options:</th>
-			<td><input class="checkbox" type="checkbox" name="delete_options_next_deactivate" id="delete_options_next_deactivate" value="1" <?php if ($this->options['delete_options_next_deactivate'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Remove stored options on next deactivation</span></td>
+			<td><input class="checkbox" type="checkbox" name="delete_options_next_deactivate" id="delete_options_next_deactivate" value="1" <?php if (@$this->options['delete_options_next_deactivate'] == 1) { echo('checked="checked"'); } ?> /> <span class="description">Remove stored options on next deactivation</span></td>
 			</tr>
 			</table>
 			<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Save Changes" /></p> 
@@ -208,7 +214,7 @@ if (!class_exists('zigweather')) {
 			</table>
 			<table class="widefat donate" cellspacing="0">
 			<thead>
-			<tr><th><img class="icon floatRight" src="<?php echo $this->plugin_folder?>images/icon-32x32-zigpress-2013.png" alt="Yes" title="Yes" />Brought to you by ZigPress</th></tr>
+			<tr><th><img class="icon floatRight" src="<?php echo $this->plugin_folder?>images/icon-16x16-zp.png" alt="Yes" title="Yes" />Brought to you by ZigPress</th></tr>
 			</thead>
 			<tr><td>
 			<p><a href="http://www.zigpress.com/">ZigPress</a> is engaged in WordPress consultancy, solutions and research. We have also released a number of free plugins to support the WordPress community.</p>
@@ -221,7 +227,7 @@ if (!class_exists('zigweather')) {
 			</div><!--wrap-right-->
 			<div class="clearer">&nbsp;</div>
 			<?php
-			if ($this->options['debug'] == '1') {
+			if (@$this->options['debug'] == '1') {
 				?>
 				<h3>Debug Information</h3>
 				<pre><?php print_r($this->options)?></pre>
@@ -237,7 +243,7 @@ if (!class_exists('zigweather')) {
 		
 		
 		function maybe_clear_caches() {
-			if ($this->options['clearcaches'] == 1){
+			if (@$this->options['clearcaches'] == 1){
 				$this->options['cache_time'] = array(); # clear ALL
 				$this->options['cache_content'] = array();
 				$this->options['clearcaches'] = 0;
@@ -247,7 +253,7 @@ if (!class_exists('zigweather')) {
 
 
 		function maybe_clear_cache_time($widget_id) {
-			if (!$cache_time = $this->options['cache_time'][$widget_id]){
+			if (!$cache_time = @$this->options['cache_time'][$widget_id]){
 				# couldn't get cache time so initialise it
 				$this->options['cache_time'][$widget_id] = 0;
 				update_option("zigweather2_options", $this->options);
@@ -256,7 +262,7 @@ if (!class_exists('zigweather')) {
 		
 		
 		function maybe_clear_cache_content($widget_id) {
-			if (!$cache_content = $this->options['cache_content'][$widget_id]){
+			if (!$cache_content = @$this->options['cache_content'][$widget_id]){
 				# couldn't get cache content so initialise it - and make sure the time is reset too
 				$this->options['cache_time'][$widget_id] = 0;
 				$this->options['cache_content'][$widget_id] = '';
@@ -266,7 +272,7 @@ if (!class_exists('zigweather')) {
 		
 		
 		function maybe_fetch_data($widget_id, $location) {
-			if (time() - 1800 > ($this->options['cache_time'][$widget_id])) { # 30 minutes
+			if (time() - 1800 > (@$this->options['cache_time'][$widget_id])) { # 30 minutes
 				# get feed and cache it
 				$ch = curl_init();
 

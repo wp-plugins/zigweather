@@ -93,8 +93,8 @@ class widget_zigweather extends WP_Widget
 
 	public function form($instance) {
 		global $zigweather;
-		$title = esc_attr($instance['title']);
-		$location = esc_attr($instance['location']);
+		$title = esc_attr(@$instance['title']);
+		$location = esc_attr(@$instance['location']);
 		if ($zigweather->options['key'] == '') {
 			?>
 			<p>Enter the API key on the <a href="<?php bloginfo('url')?>/wp-admin/options-general.php?page=zigweather-options">settings page</a>!</p>
