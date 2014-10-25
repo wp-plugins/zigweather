@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.2.8
+Version: 2.2.9
 Author: ZigPress
 Requires at least: 3.6
 Tested up to: 4.0
@@ -150,7 +150,7 @@ if (!class_exists('zigweather')) {
 			<table class="form-table">
 			<tr valign="top">
 			<th scope="row" class="right">World Weather Online key:</th>
-			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key at <a target="_blank" href="http://developer.worldweatheronline.com/member/register">http://developer.worldweatheronline.com/member/register</a></span></td>
+			<td><input name="key" type="text" id="key" value="<?php echo esc_attr($this->options['key']) ?>" class="regular-text" /><br /><span class="description">Get a free key by registering at <a target="_blank" href="https://developer.worldweatheronline.com/auth/register">https://developer.worldweatheronline.com/auth/register</a></span></td>
 			</tr>
 			<tr valign="top">
 			<th scope="row" class="right">Load stylesheet:</th>
