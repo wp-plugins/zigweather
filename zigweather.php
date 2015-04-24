@@ -3,17 +3,17 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.3.0
+Version: 2.3.1
 Author: ZigPress
 Requires at least: 3.6
-Tested up to: 4.1
+Tested up to: 4.2
 Author URI: http://www.zigpress.com/
 License: GPLv2
 */
 
 
 /*
-Copyright (c) 2010-2014 ZigPress
+Copyright (c) 2010-2015 ZigPress
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ if (!class_exists('zigweather')) {
 			$this->plugin_folder = get_bloginfo('wpurl') . '/' . PLUGINDIR . '/' . dirname(plugin_basename(__FILE__)) . '/';
 			$this->plugin_directory = WP_PLUGIN_DIR . '/' . dirname(plugin_basename(__FILE__)) . '/';
 			global $wp_version;
-			if (version_compare(phpversion(), '5.2.4', '<')) wp_die('ZigWeather requires PHP 5.2.4 or newer. Please update your server.'); 
+			if (version_compare(phpversion(), '5.3', '<')) wp_die('ZigWeather requires PHP 5.3 or newer. Please update your server.');
 			if (version_compare($wp_version, '3.6', '<')) wp_die('ZigWeather requires WordPress 3.6 or newer. Please update your installation.'); 
 			$this->get_params();
 			$this->callback_url = preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
@@ -65,6 +65,10 @@ if (!class_exists('zigweather')) {
 			add_action('admin_enqueue_scripts', array($this, 'action_admin_enqueue_scripts'));
 			add_action('admin_menu', array($this, 'action_admin_menu'));
 			add_filter('plugin_row_meta', array($this, 'filter_plugin_row_meta'), 10, 2 );
+			/* That which can be added without discussion, can be removed without discussion. */
+			remove_filter('the_title', 'capital_P_dangit', 11);
+			remove_filter('the_content', 'capital_P_dangit', 11);
+			remove_filter('comment_text', 'capital_P_dangit', 31);
 			$this->options = get_option('zigweather2_options');
 		}
 	
