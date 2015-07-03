@@ -5,8 +5,8 @@ class widget_zigweather extends WP_Widget
 {
 
 
-	public function widget_zigweather() {
-		parent::WP_Widget(false, $name = 'ZigWeather', array('description'=>"Shows a weather panel"), array('width'=>'400'));	
+	public function __construct() {
+		parent::__construct(false, $name = 'ZigWeather', array('description'=>"Shows a weather panel"), array('width'=>'400'));
 	}
 
 
