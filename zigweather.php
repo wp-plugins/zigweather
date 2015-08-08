@@ -3,7 +3,7 @@
 Plugin Name: ZigWeather
 Plugin URI: http://www.zigpress.com/plugins/zigweather/
 Description: Completely rebuilt plugin to show current weather conditions.
-Version: 2.3.3
+Version: 2.3.4
 Author: ZigPress 
 Requires at least: 3.6
 Tested up to: 4.3
