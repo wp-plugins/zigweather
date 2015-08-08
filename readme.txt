@@ -1,5 +1,5 @@
 === ZigWeather ===
-Contributors: ZigPress
+Contributors: ZigPress 
 Donate link: http://www.zigpress.com/donations/
 Tags: widget, multi-widget, sidebar, weather, worldwide, temperature, wind, rainfall, humidity, zig, zigpress
 Requires at least: 3.6
@@ -55,7 +55,7 @@ Go to the settings page and set the "Load stylesheet" dropdown to "None" then sa
 == Changelog ==
 
 = 2.3.3 =
-* Confirmed compatibility with WordPress 4.3
+* Confirmed compatibility with WordPress 4.3 
 = 2.3.2 =
 * Confirmed compatibility with WordPress 4.2.2
 * Updated classes to use PHP5 constructors to satisfy WordPress Changeset 32990
