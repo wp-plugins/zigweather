@@ -1,0 +1,10 @@
+
+
+.widget_zigweather .zigweather-wrapper { }
+.widget_zigweather .zigweather-wrapper .icon { float:right; display:inline; margin:0 0 5px 5px; }
+.widget_zigweather .zigweather-wrapper .location { }
+.widget_zigweather .zigweather-wrapper .humidity { margin:0 0 5px 0; }
+.widget_zigweather .zigweather-wrapper .fetched { float:left; }
+.widget_zigweather .zigweather-wrapper .credit { text-align:right; }
+
+
